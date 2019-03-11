@@ -58,17 +58,21 @@ public class Control {
                 song = dis.readUTF();
                 System.out.println("Receving file: " + song);
                 System.out.println("Saving as file: " + song);
-                int sz = Integer.parseInt(dis.readUTF());
-                System.out.println("Receiving " + sz + " bytes of data");
-                System.out.println("File Size: " + (sz / (1024 * 1024)) + " MB");
-                byte b[] = new byte[sz];
+                long fileSize = dis.readLong();
+                System.out.println("Receiving " + fileSize + " bytes of data");
+                System.out.println("File Size: " + (fileSize / (1024 * 1024)) + " MB");
+                byte b[] = new byte[(int) fileSize];
                 System.out.println("Receving file..");
                 FileOutputStream fos = new FileOutputStream(new File(p.getFileName().toString()), true);
-                long bytesRead;
-                do {
-                    bytesRead = dis.read(b, 0, b.length);
-                    fos.write(b, 0, b.length);
-                } while (!(bytesRead < sz));
+                int bytesRead;
+                while (fileSize > 0 && (bytesRead = dis.read(b, 0, (int) Math.min(b.length, fileSize))) != -1) {
+                    fos.write(b, 0, bytesRead);
+                    fileSize -= bytesRead;
+                }
+//                do {
+//                    bytesRead = dis.read(b, 0, b.length);
+//                    fos.write(b, 0, b.length);
+//                } while (!(bytesRead < sz));
                 System.out.println("Comleted");
                 fos.close();
             } catch (IOException e) {
