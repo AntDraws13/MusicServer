@@ -90,7 +90,7 @@ class ClientHandler extends Thread {
                     int size = (int) file.length();
                     byte b[] = new byte[size];
                     int read;
-                    dos.writeUTF(Long.toString(size));
+                    dos.writeLong(file.length());
                     dos.flush();
                     System.out.println("Size: " + size);
                     System.out.println("Buf size: " + s.getReceiveBufferSize());
@@ -99,7 +99,6 @@ class ClientHandler extends Thread {
                         dos.flush();
                     }
                     fin.close();
-                    while (dis.available() > 0);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
